@@ -2,7 +2,6 @@
 
 FlipWise is a lightweight flashcard app designed to help you quickly review and memorize key concepts. Built with Python and Tkinter, this clean and focused GUI tool lets you create, flip through, and quiz yourself on flashcards — perfect for learning on your own terms.
 
----
 
 ## About
 
@@ -14,7 +13,6 @@ Whether you're studying for a test or building up your vocabulary, **FlipWise** 
 
 It’s built for simplicity, speed, and easy customization.
 
----
 
 ## Features
 
