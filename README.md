@@ -20,5 +20,5 @@ It’s built for simplicity, speed, and easy customization.
 - Flip cards to reveal answers  
 - Shuffle mode for randomized quizzes  
 - Save/load flashcards from a JSON file  
-- 🖥Built with Python’s Tkinter GUI toolkit  
+- Built with Python’s Tkinter GUI toolkit  
 - No internet required – everything runs locally  
