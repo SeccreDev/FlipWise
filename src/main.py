@@ -86,7 +86,7 @@ class FlipWiseApp:
         """
         if not self.flashcards:
             return
-        self.current_index = (self.current_index + 1) % len(save_flashcards)
+        self.current_index = (self.current_index + 1) % len(self.save_flashcards)
         self.showing_front = True
         self.update_card_display()
 
@@ -119,9 +119,9 @@ class FlipWiseApp:
             messagebox.showinfo("Load", f"Loaded {len(self.flashcards)} cards!")
 
     def update_card_display(self):
-    """
-    Update the flashcard label with new text.
-    """
+        """
+        Update the flashcard label with new text.
+        """
         if not self.flashcards:
             self.card_label.config(text = "No cards yet. Add one!")
         else:
