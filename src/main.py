@@ -59,6 +59,9 @@ class FlipWiseApp:
         self.shuffle_btn = tk.Button(button_frame, text = "Shuffle Mode", command = self.shuffle_mode)
         self.shuffle_btn.grid(row = 2, column = 1, padx = 5, pady = 5)
 
+        self.clear_btn = tk.Button(button_frame, text = "Clear", command = self.clear_cards)
+        self.clear_btn.grid(row = 2, column = 2, padx = 5, pady = 5)
+
         self.update_card_display()
     
     def previous_card(self):
@@ -150,6 +153,13 @@ class FlipWiseApp:
             self.current_index = 0
             self.update_card_display()
 
+    def clear_cards(self):
+        if messagebox.askyesno("Clear Cards", "Are you sure you want to clear all flashcards?"):
+            self.flashcards = []
+            self.current_index = 0
+            self.showing_front = True
+            self.update_card_display()
+        return 
 
     def update_card_display(self):
         """
