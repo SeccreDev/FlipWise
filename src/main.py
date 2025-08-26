@@ -17,7 +17,7 @@ class FlipWiseApp:
 
     def __init__(self, root):
         """
-        Initialize the FlashcardApp UI and state.
+        Initialize the FlipWiseApp.
 
         Args:
             root (tk.Tk): The root Tkinter window.
@@ -25,7 +25,7 @@ class FlipWiseApp:
         self.root = root
         self.root.title("FlipWise - Flashcard App")
 
-        # Store flashcards as a list of dicts: {"question": str, "answer": str}
+        # Store flashcards as a list of dicts: [{"question": str, "answer": str}]
         self.flashcards = []
         self.current_index = 0
         self.showing_front = True
@@ -51,7 +51,7 @@ class FlipWiseApp:
         self.save_btn.grid(row = 1, column = 0, padx = 5, pady = 5)
 
         self.load_btn = tk.Button(button_frame, text = "Load", command = self.load_flashcards)
-        self.load_btn.grid(row = 1, column = 1, padx = 5, pady = 5)
+        self.load_btn.grid(row = 1, column = 2, padx = 5, pady = 5)
 
         self.update_card_display()
     
@@ -86,7 +86,7 @@ class FlipWiseApp:
         """
         if not self.flashcards:
             return
-        self.current_index = (self.current_index + 1) % len(self.save_flashcards)
+        self.current_index = (self.current_index + 1) % len(self.flashcards)
         self.showing_front = True
         self.update_card_display()
 
@@ -126,7 +126,11 @@ class FlipWiseApp:
             self.card_label.config(text = "No cards yet. Add one!")
         else:
             card = self.flashcards[self.current_index]
-            text = card["front"] if self.showing_front else card["back"]
+            if (self.showing_front):
+                text = card["front"]
+            else:
+                text = card["back"]
+
             self.card_label.config(text = text)
 
 if __name__ == "__main__":
