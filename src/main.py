@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox, filedialog
 import json
 import os
-
+import random
 
 class FlipWiseApp:
     """
@@ -38,8 +38,8 @@ class FlipWiseApp:
         button_frame.pack(pady = 10)
 
         # Buttons for flashcard actions
-        self.add_btn = tk.Button(button_frame, text = "+ Add Card", command = self.add_card)
-        self.add_btn.grid(row = 0, column = 0, padx = 5)
+        self.previous_btn = tk.Button(button_frame, text="BACK!", command = self.previous_card)
+        self.previous_btn.grid(row = 0, column = 0, padx = 5)
 
         self.flip_btn = tk.Button(button_frame,  text = "FLIP!", command = self.flip_card)
         self.flip_btn.grid(row = 0, column = 1, padx = 5)
@@ -50,27 +50,27 @@ class FlipWiseApp:
         self.save_btn = tk.Button(button_frame, text = "Save", command = self.save_flashcards)
         self.save_btn.grid(row = 1, column = 0, padx = 5, pady = 5)
 
+        self.add_btn = tk.Button(button_frame, text = "+ Add Card", command = self.add_card)
+        self.add_btn.grid(row = 1, column = 1, padx = 5)
+
         self.load_btn = tk.Button(button_frame, text = "Load", command = self.load_flashcards)
         self.load_btn.grid(row = 1, column = 2, padx = 5, pady = 5)
 
+        self.shuffle_btn = tk.Button(button_frame, text = "Shuffle Mode", command = self.shuffle_mode)
+        self.shuffle_btn.grid(row = 2, column = 1, padx = 5, pady = 5)
+
         self.update_card_display()
     
-    def add_card(self):
+    def previous_card(self):
         """
-        Add a new flashcard from the input fields.
+        Move to the previous flashcard (wraps around if at beginning).
         """
-        front = simpledialog.askstring("New Flashcard", "Enter the question/front:")
-        if not front:
+        if not self.flashcards:
             return
-        back = simpledialog.askstring("New Flashcard", "Enter the answer/back:")
-        if not back:
-            return
-        
-        self.flashcards.append({"front": front, "back": back})
-        self.current_index = len(self.flashcards) - 1
+        self.current_index = (self.current_index - 1) % len(self.flashcards)
         self.showing_front = True
         self.update_card_display()
-    
+
     def flip_card(self):
         """
         Flip the flashcard between question and answer.
@@ -104,6 +104,22 @@ class FlipWiseApp:
                 json.dump(self.flashcards, f, indent = 2)
             messagebox.showinfo("Save", f"Saved {len(self.flashcards)} cards!")
     
+    def add_card(self):
+        """
+        Add a new flashcard from the input fields.
+        """
+        front = simpledialog.askstring("New Flashcard", "Enter the question/front:")
+        if not front:
+            return
+        back = simpledialog.askstring("New Flashcard", "Enter the answer/back:")
+        if not back:
+            return
+        
+        self.flashcards.append({"front": front, "back": back})
+        self.current_index = len(self.flashcards) - 1
+        self.showing_front = True
+        self.update_card_display()
+
     def load_flashcards(self):
         """
         Load flashcards from a JSON file.
@@ -117,6 +133,23 @@ class FlipWiseApp:
             self.showing_front = True
             self.update_card_display()
             messagebox.showinfo("Load", f"Loaded {len(self.flashcards)} cards!")
+    
+    def shuffle_mode(self):
+        """
+        Shuffles the cards.
+        """
+        self.shuffle_mode = not self.shuffle_mode
+
+        if self.shuffle_mode:
+            random.shuffle(self.flashcards)
+            self.current_index = 0
+            self.update_card_display()
+        else:
+            # Will reset the normal order
+            self.flashcards.sort(key = lambda card: card["front"])
+            self.current_index = 0
+            self.update_card_display()
+
 
     def update_card_display(self):
         """
