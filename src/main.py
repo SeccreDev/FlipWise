@@ -56,6 +56,9 @@ class FlipWiseApp:
         self.load_btn = tk.Button(button_frame, text = "Load", command = self.load_flashcards)
         self.load_btn.grid(row = 1, column = 2, padx = 5, pady = 5)
 
+        self.edit_btn = tk.Button(button_frame, text = "Edit", command = self.edit_card)
+        self.edit_btn.grid(row = 2, column = 0, padx = 5, pady = 5)
+
         self.shuffle_btn = tk.Button(button_frame, text = "Shuffle Mode", command = self.shuffle_mode)
         self.shuffle_btn.grid(row = 2, column = 1, padx = 5, pady = 5)
 
@@ -137,6 +140,33 @@ class FlipWiseApp:
             self.update_card_display()
             messagebox.showinfo("Load", f"Loaded {len(self.flashcards)} cards!")
     
+    def edit_card(self):
+        """
+        Edit the current flashcard.
+        """
+        if not self.flashcards:
+            messagebox.showinfo("Edit Card", "No cards available to edit.")
+            return
+        
+        front = self.flashcards[self.current_index]["front"]
+        back = self.flashcards[self.current_index]["back"]
+
+        new_front = simpledialog.askstring("Edit Card", "Edit front:", initialvalue = front)
+        if new_front is None:
+            return
+        
+        new_back = simpledialog.askstring("Edit Card", "Edit back:", initialvalue = back)
+        if new_back is None:
+            return
+        
+        # Update the card
+        self.flashcards[self.current_index]["front"] = new_front
+        self.flashcards[self.current_index]["back"] = new_back
+        self.update_card_display()
+        messagebox.showinfo("Edit Card", "Card updated successfully!")
+
+
+
     def shuffle_mode(self):
         """
         Shuffles the cards.
@@ -154,6 +184,11 @@ class FlipWiseApp:
             self.update_card_display()
 
     def clear_cards(self):
+        """
+        Clear the currently loaded flashcards.
+        """
+        if not self.flashcards:
+            return
         if messagebox.askyesno("Clear Cards", "Are you sure you want to clear all flashcards?"):
             self.flashcards = []
             self.current_index = 0
