@@ -25,6 +25,11 @@ class FlipWiseApp:
         self.root = root
         self.root.title("FlipWise - Flashcard App")
 
+        # Useful bindings
+        self.root.bind("<space>", lambda e: self.flip_card())
+        self.root.bind("<Right>", lambda e: self.next_card())
+        self.root.bind("<Left>", lambda e: self.previous_card())
+
         # Store flashcards as a list of dicts: [{"question": str, "answer": str}]
         self.flashcards = []
         self.current_index = 0
