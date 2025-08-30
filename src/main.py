@@ -29,11 +29,16 @@ class FlipWiseApp:
         self.root.bind("<space>", lambda e: self.flip_card())
         self.root.bind("<Right>", lambda e: self.next_card())
         self.root.bind("<Left>", lambda e: self.previous_card())
+        self.root.bind("<e>", lambda e: self.edit_card())
+        self.root.bind("<s>", lambda e: self.shuffle_mode())
+        self.root.bind("<c>", lambda e: self.clear_cards())
+        self.root.bind("<d>", lambda e: self.delete_card())
 
         # Store flashcards as a list of dicts: [{"question": str, "answer": str}]
         self.flashcards = []
         self.current_index = 0
         self.showing_front = True
+        self.is_shuffle_mode = False
 
         # Label to display question/answer
         self.card_label = tk.Label(root, text="No cards yet. Add one!", font=("Arial", 10), width = 30, height = 10, relief="groove", wraplength = 400)
@@ -58,8 +63,11 @@ class FlipWiseApp:
         self.add_btn = tk.Button(button_frame, text = "+ Add Card", command = self.add_card)
         self.add_btn.grid(row = 1, column = 1, padx = 5)
 
+        self.delete_btn = tk.Button(button_frame, text = "- Delete Card", command = self.delete_card)
+        self.delete_btn.grid(row = 1, column = 2, padx = 5)
+
         self.load_btn = tk.Button(button_frame, text = "Load", command = self.load_flashcards)
-        self.load_btn.grid(row = 1, column = 2, padx = 5, pady = 5)
+        self.load_btn.grid(row = 1, column = 3, padx = 5, pady = 5)
 
         self.edit_btn = tk.Button(button_frame, text = "Edit", command = self.edit_card)
         self.edit_btn.grid(row = 2, column = 0, padx = 5, pady = 5)
@@ -131,6 +139,26 @@ class FlipWiseApp:
         self.showing_front = True
         self.update_card_display()
 
+    def delete_card(self):
+        """
+        Deletes the currently displayed flashcard.
+        """
+        if not self.flashcards:
+            messagebox.showinfo("Delete Card", "No cards to delete.")
+            return
+        
+        front_text = self.flashcards[self.current_index]["front"]
+        confirm = messagebox.askyesno("Delete Card", f"Delete this card?\n\nFront: {front_text}")
+        
+        if confirm:
+            del self.flashcards[self.current_index]
+
+            # Adjusting index
+            if self.current_index >= len(self.flashcards):
+                self.current_index = max(0, len(self.flashcards) - 1)
+            
+            self.update_card_display()
+
     def load_flashcards(self):
         """
         Load flashcards from a JSON file.
@@ -176,12 +204,17 @@ class FlipWiseApp:
         """
         Shuffles the cards.
         """
-        self.shuffle_mode = not self.shuffle_mode
+        if not self.flashcards:
+            return
+
+        self.is_shuffle_mode = not self.is_shuffle_mode
 
         if self.shuffle_mode:
             random.shuffle(self.flashcards)
             self.current_index = 0
+            self.showing_front = True
             self.update_card_display()
+            messagebox.showinfo("Shuffle Cards", "Cards shuffled!")
         else:
             # Will reset the normal order
             self.flashcards.sort(key = lambda card: card["front"])
@@ -199,7 +232,7 @@ class FlipWiseApp:
             self.current_index = 0
             self.showing_front = True
             self.update_card_display()
-        return 
+
 
     def update_card_display(self):
         """
