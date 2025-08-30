@@ -32,7 +32,7 @@ class FlipWiseApp:
         self.root.bind("<e>", lambda e: self.edit_card())
         self.root.bind("<s>", lambda e: self.shuffle_mode())
         self.root.bind("<c>", lambda e: self.clear_cards())
-        self.root.bind("<d>", lambda e: self.delete_card())
+        self.root.bind("<Delete>", lambda e: self.delete_card())
 
         # Store flashcards as a list of dicts: [{"question": str, "answer": str}]
         self.flashcards = []
@@ -157,6 +157,7 @@ class FlipWiseApp:
             if self.current_index >= len(self.flashcards):
                 self.current_index = max(0, len(self.flashcards) - 1)
             
+            self.showing_front = True
             self.update_card_display()
 
     def load_flashcards(self):
