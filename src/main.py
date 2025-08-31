@@ -127,17 +127,40 @@ class FlipWiseApp:
         """
         Add a new flashcard from the input fields.
         """
-        front = simpledialog.askstring("New Flashcard", "Enter the question/front:")
-        if not front:
-            return
-        back = simpledialog.askstring("New Flashcard", "Enter the answer/back:")
-        if not back:
-            return
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Add Flashcard")
+
+        tk.Label(dialog, text="Front:").grid(row=0, column=0)
+        front_field = tk.Entry(dialog)
+        front_field.grid(row=0, column=1)
+
+        tk.Label(dialog, text="Back:").grid(row=1, column=0)
+        back_field = tk.Entry(dialog)
+        back_field.grid(row=1, column=1)
+
+        tk.Label(dialog, text="Category:").grid(row=2, column=0)
+        category_field = tk.Entry(dialog)
+        category_field.grid(row=2, column=1)
         
-        self.flashcards.append({"front": front, "back": back})
-        self.current_index = len(self.flashcards) - 1
-        self.showing_front = True
-        self.update_card_display()
+        # Saving Button
+        def save_card():
+            front = front_field.get().strip()
+            back = back_field.get().strip()
+            category = category_field.get().strip() or "General"
+            if front and back:
+                self.flashcards.append({"front": front, "back": back, "category": category})
+                self.current_index = len(self.flashcards) - 1
+                self.showing_front = True
+                self.update_card_display()
+            elif not front and not back:
+                messagebox.showinfo("Add Flashcard", "Failed! Missing front and back of flashcard!")
+            elif not front:
+                messagebox.showinfo("Add Flashcard", "Failed! Missing front of flashcard!")
+            else:
+                messagebox.showinfo("Add Flashcard", "Failed! Missing back of flashcard")
+            dialog.destroy()
+        tk.Button(dialog, text = "Save", command = save_card).grid(row = 3, column = 0, columnspan = 2)
+
 
     def delete_card(self):
         """
@@ -247,8 +270,9 @@ class FlipWiseApp:
                 text = card["front"]
             else:
                 text = card["back"]
-
-            self.card_label.config(text = text)
+            
+            category = card["category"]
+            self.card_label.config(text = f"{text}\n\n{category}")
 
 if __name__ == "__main__":
     root = tk.Tk()
