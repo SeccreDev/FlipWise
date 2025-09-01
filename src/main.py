@@ -127,19 +127,19 @@ class FlipWiseApp:
         """
         Add a new flashcard from the input fields.
         """
-        dialog = tk.Toplevel(self.root)
-        dialog.title("Add Flashcard")
+        add_window = tk.Toplevel(self.root)
+        add_window.title("Add Flashcard")
 
-        tk.Label(dialog, text="Front:").grid(row=0, column=0)
-        front_field = tk.Entry(dialog)
+        tk.Label(add_window, text="Front:").grid(row=0, column=0)
+        front_field = tk.Entry(add_window)
         front_field.grid(row=0, column=1)
 
-        tk.Label(dialog, text="Back:").grid(row=1, column=0)
-        back_field = tk.Entry(dialog)
+        tk.Label(add_window, text="Back:").grid(row=1, column=0)
+        back_field = tk.Entry(add_window)
         back_field.grid(row=1, column=1)
 
-        tk.Label(dialog, text="Category:").grid(row=2, column=0)
-        category_field = tk.Entry(dialog)
+        tk.Label(add_window, text="Category:").grid(row=2, column=0)
+        category_field = tk.Entry(add_window)
         category_field.grid(row=2, column=1)
         
         # Saving Button
@@ -158,8 +158,8 @@ class FlipWiseApp:
                 messagebox.showinfo("Add Flashcard", "Failed! Missing front of flashcard!")
             else:
                 messagebox.showinfo("Add Flashcard", "Failed! Missing back of flashcard")
-            dialog.destroy()
-        tk.Button(dialog, text = "Save", command = save_card).grid(row = 3, column = 0, columnspan = 2)
+            add_window.destroy()
+        tk.Button(add_window, text = "Save", command = save_card).grid(row = 3, column = 0, columnspan = 2)
 
 
     def delete_card(self):
@@ -205,24 +205,47 @@ class FlipWiseApp:
             messagebox.showinfo("Edit Card", "No cards available to edit.")
             return
         
-        front = self.flashcards[self.current_index]["front"]
-        back = self.flashcards[self.current_index]["back"]
+        card = self.flashcards[self.current_index]
+        front = card["front"]
+        back = card["back"]
+        category = card["category"]
 
-        new_front = simpledialog.askstring("Edit Card", "Edit front:", initialvalue = front)
-        if new_front is None:
-            return
+        edit_window = tk.Toplevel(self.root)
+        edit_window.title("Edit Flashcard")
+
+        tk.Label(edit_window, text = "Front:").pack(pady = 5)
+        front_field = tk.Entry(edit_window, width = 40)
+        front_field.insert(0, front)
+        front_field.pack(pady = 5)
+
+        tk.Label(edit_window, text = "Back:").pack(pady = 5)
+        back_field = tk.Entry(edit_window, width = 40)
+        back_field.insert(0, back)
+        back_field.pack(pady = 5)
+
+        tk.Label(edit_window, text = "Category:").pack(pady = 5)
+        category_field = tk.Entry(edit_window, width = 40)
+        category_field.insert(0, category)
+        category_field.pack(pady = 5)
         
-        new_back = simpledialog.askstring("Edit Card", "Edit back:", initialvalue = back)
-        if new_back is None:
-            return
-        
-        # Update the card
-        self.flashcards[self.current_index]["front"] = new_front
-        self.flashcards[self.current_index]["back"] = new_back
-        self.update_card_display()
-        messagebox.showinfo("Edit Card", "Card updated successfully!")
-
-
+        # Saving Button
+        def save_edited_card():
+            front = front_field.get().strip()
+            back = back_field.get().strip()
+            category = category_field.get().strip() or "General"
+            if front and back:
+                self.flashcards[self.current_index] = {"front": front, "back": back, "category": category}
+                self.showing_front = True
+                self.update_card_display()
+                messagebox.showinfo("Edit Flashcard", "Flashcard updated successfully!")
+            elif not front and not back:
+                messagebox.showinfo("Edit Flashcard", "Failed! Missing front and back of flashcard!")
+            elif not front:
+                messagebox.showinfo("Edit Flashcard", "Failed! Missing front of flashcard!")
+            else:
+                messagebox.showinfo("Edit Flashcard", "Failed! Missing back of flashcard")
+            edit_window.destroy()
+        tk.Button(edit_window, text = "Save", command = save_edited_card).pack(pady = 10)
 
     def shuffle_mode(self):
         """
