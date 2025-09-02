@@ -130,17 +130,17 @@ class FlipWiseApp:
         add_window = tk.Toplevel(self.root)
         add_window.title("Add Flashcard")
 
-        tk.Label(add_window, text="Front:").grid(row=0, column=0)
-        front_field = tk.Entry(add_window)
-        front_field.grid(row=0, column=1)
+        tk.Label(add_window, text = "Front:").pack(pady = 5)
+        front_field = tk.Entry(add_window, width = 40)
+        front_field.pack(pady = 5)
 
-        tk.Label(add_window, text="Back:").grid(row=1, column=0)
-        back_field = tk.Entry(add_window)
-        back_field.grid(row=1, column=1)
+        tk.Label(add_window, text = "Back:").pack(pady = 5)
+        back_field = tk.Entry(add_window, width = 40)
+        back_field.pack(pady = 5)
 
-        tk.Label(add_window, text="Category:").grid(row=2, column=0)
-        category_field = tk.Entry(add_window)
-        category_field.grid(row=2, column=1)
+        tk.Label(add_window, text = "Category:").pack(pady = 5)
+        category_field = tk.Entry(add_window, width = 40)
+        category_field.pack(pady = 5)
         
         # Saving Button
         def save_card():
@@ -159,7 +159,7 @@ class FlipWiseApp:
             else:
                 messagebox.showinfo("Add Flashcard", "Failed! Missing back of flashcard")
             add_window.destroy()
-        tk.Button(add_window, text = "Save", command = save_card).grid(row = 3, column = 0, columnspan = 2)
+        tk.Button(add_window, text = "Save", command = save_card).pack(pady = 10)
 
 
     def delete_card(self):
