@@ -39,6 +39,7 @@ class FlipWiseApp:
         self.current_index = 0
         self.showing_front = True
         self.is_shuffle_mode = False
+        self.current_category = None
 
         # Label to display question/answer
         self.card_label = tk.Label(root, text="No cards yet. Add one!", font=("Arial", 10), width = 30, height = 10, relief="groove", wraplength = 400)
