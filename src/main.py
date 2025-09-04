@@ -36,10 +36,12 @@ class FlipWiseApp:
 
         # Store flashcards as a list of dicts: [{"question": str, "answer": str}]
         self.flashcards = []
+        self.filtered_cards = []
         self.current_index = 0
         self.showing_front = True
         self.is_shuffle_mode = False
-        self.current_category = None
+        self.current_category = "All"
+        categories = sorted({card["category"] for card in self.flashcards})
 
         # Label to display question/answer
         self.card_label = tk.Label(root, text="No cards yet. Add one!", font=("Arial", 10), width = 30, height = 10, relief="groove", wraplength = 400)
@@ -79,15 +81,21 @@ class FlipWiseApp:
         self.clear_btn = tk.Button(button_frame, text = "Clear", command = self.clear_cards)
         self.clear_btn.grid(row = 2, column = 2, padx = 5, pady = 5)
 
+        self.category_var = tk.StringVar(self.root)
+        self.category_var.set("All")
+        self.category_menu = tk.OptionMenu(self.root, self.category_var, "All", *categories, command = self.switch_category)
+        self.category_menu.pack()
+
+
         self.update_card_display()
     
     def previous_card(self):
         """
         Move to the previous flashcard (wraps around if at beginning).
         """
-        if not self.flashcards:
+        if not self.filtered_cards:
             return
-        self.current_index = (self.current_index - 1) % len(self.flashcards)
+        self.current_index = (self.current_index - 1) % len(self.filtered_cards)
         self.showing_front = True
         self.update_card_display()
 
@@ -106,7 +114,7 @@ class FlipWiseApp:
         """
         if not self.flashcards:
             return
-        self.current_index = (self.current_index + 1) % len(self.flashcards)
+        self.current_index = (self.current_index + 1) % len(self.filtered_cards)
         self.showing_front = True
         self.update_card_display()
 
@@ -153,6 +161,8 @@ class FlipWiseApp:
                 self.current_index = len(self.flashcards) - 1
                 self.showing_front = True
                 self.update_card_display()
+                self.refresh_categories()
+                self.switch_category(self.current_category)
             elif not front and not back:
                 messagebox.showinfo("Add Flashcard", "Failed! Missing front and back of flashcard!")
             elif not front:
@@ -182,6 +192,8 @@ class FlipWiseApp:
                 self.current_index = max(0, len(self.flashcards) - 1)
             
             self.showing_front = True
+            self.refresh_categories()
+            self.switch_category(self.current_category)
             self.update_card_display()
 
     def load_flashcards(self):
@@ -195,6 +207,8 @@ class FlipWiseApp:
                 self.flashcards = json.load(f)
             self.current_index = 0
             self.showing_front = True
+            self.refresh_categories()
+            self.switch_category(self.current_category)
             self.update_card_display()
             messagebox.showinfo("Load", f"Loaded {len(self.flashcards)} cards!")
     
@@ -238,6 +252,8 @@ class FlipWiseApp:
                 self.flashcards[self.current_index] = {"front": front, "back": back, "category": category}
                 self.showing_front = True
                 self.update_card_display()
+                self.refresh_categories()
+                self.switch_category(self.current_category)
                 messagebox.showinfo("Edit Flashcard", "Flashcard updated successfully!")
             elif not front and not back:
                 messagebox.showinfo("Edit Flashcard", "Failed! Missing front and back of flashcard!")
@@ -252,13 +268,13 @@ class FlipWiseApp:
         """
         Shuffles the cards.
         """
-        if not self.flashcards:
+        if not self.filtered_cards:
             return
 
         self.is_shuffle_mode = not self.is_shuffle_mode
 
         if self.shuffle_mode:
-            random.shuffle(self.flashcards)
+            random.shuffle(self.filtered_cards)
             self.current_index = 0
             self.showing_front = True
             self.update_card_display()
@@ -281,15 +297,47 @@ class FlipWiseApp:
             self.showing_front = True
             self.update_card_display()
 
+    def switch_category(self, selected_category):
+        """
+        Switches the active category and filters the flashcards shown.
+        """
+        if selected_category == "All":
+            self.filtered_cards = self.flashcards
+        else:
+            self.filtered_cards = [card for card in self.flashcards if card["category"] == selected_category]
+
+        self.current_index = 0
+        self.showing_front = True
+        self.update_card_display()
+
+    def refresh_categories(self):
+        """
+        Refreshes the category dropdown menu based on available flashcards.
+        """
+        # Gather all categories
+        categories = sorted({card.get("category", "General") for card in self.flashcards})
+        categories = ["All"] + categories
+
+        # Clear existing menu
+        self.category_menu["menu"].delete(0, "end")
+
+        # Rebuild menu with new categories
+        for cat in categories:
+            self.category_menu["menu"].add_command(label = cat, command = lambda value = cat: (self.category_var.set(value), self.switch_category(value)))
+
+        # Ensure current selection is valid
+        if self.category_var.get() not in categories:
+            self.category_var.set("All")
+            self.switch_category("All")
 
     def update_card_display(self):
         """
         Update the flashcard label with new text.
         """
-        if not self.flashcards:
+        if not self.filtered_cards:
             self.card_label.config(text = "No cards yet. Add one!")
         else:
-            card = self.flashcards[self.current_index]
+            card = self.filtered_cards[self.current_index]
             if (self.showing_front):
                 text = card["front"]
             else:
