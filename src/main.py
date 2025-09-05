@@ -24,6 +24,23 @@ class FlipWiseApp:
         """
         self.root = root
         self.root.title("FlipWise - Flashcard App")
+        
+        # Themes
+        self.dark_mode = False
+
+        self.light_theme = {
+            "bg": "white",
+            "fg": "black",
+            "button_bg": "#f0f0f0",
+            "button_fg": "black"
+            }
+
+        self.dark_theme = {
+            "bg": "#2e2e2e",
+            "fg": "white",
+            "button_bg": "#444444",
+            "button_fg": "white"
+            }
 
         # Useful bindings
         self.root.bind("<space>", lambda e: self.flip_card())
@@ -86,6 +103,8 @@ class FlipWiseApp:
         self.category_menu = tk.OptionMenu(self.root, self.category_var, "All", *categories, command = self.switch_category)
         self.category_menu.pack()
 
+        dark_button = tk.Button(self.root, text="Dark Mode", command = self.toggle_dark_mode)
+        dark_button.pack(pady=5)
 
         self.update_card_display()
     
@@ -345,6 +364,9 @@ class FlipWiseApp:
             
             category = card["category"]
             self.card_label.config(text = f"{text}\n\n{category}")
+
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
