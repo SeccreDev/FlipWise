@@ -365,7 +365,30 @@ class FlipWiseApp:
             category = card["category"]
             self.card_label.config(text = f"{text}\n\n{category}")
 
+    def toggle_dark_mode(self):
+        """
+        Toggles between light and dark mode.
+        """
+        self.dark_mode = not self.dark_mode
+        
+        if self.dark_mode:
+            theme = self.dark_theme
+        else: 
+            theme = self.light_theme
 
+        # Update root background
+        self.root.configure(bg = theme["bg"])
+
+        # Update card label
+        self.card_label.config(bg = theme["bg"], fg = theme["fg"])
+
+        # Update category dropdown
+        self.category_menu.config(bg = theme["button_bg"], fg = theme["button_fg"])
+
+        # Update all buttons
+        for widget in self.root.winfo_children():
+            if isinstance(widget, tk.Button):
+                widget.config(bg = theme["button_bg"], fg = theme["button_fg"])
 
 
 if __name__ == "__main__":
