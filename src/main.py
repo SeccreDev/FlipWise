@@ -157,6 +157,7 @@ class FlipWiseApp:
         """
         add_window = tk.Toplevel(self.root)
         add_window.title("Add Flashcard")
+        self.apply_theme(add_window)
 
         tk.Label(add_window, text = "Front:").pack(pady = 5)
         front_field = tk.Entry(add_window, width = 40)
@@ -246,6 +247,7 @@ class FlipWiseApp:
 
         edit_window = tk.Toplevel(self.root)
         edit_window.title("Edit Flashcard")
+        self.apply_theme(edit_window)
 
         tk.Label(edit_window, text = "Front:").pack(pady = 5)
         front_field = tk.Entry(edit_window, width = 40)
@@ -370,7 +372,7 @@ class FlipWiseApp:
         Toggles between light and dark mode.
         """
         self.dark_mode = not self.dark_mode
-        
+        self.apply_theme(self.root)
         if self.dark_mode:
             theme = self.dark_theme
         else: 
@@ -388,8 +390,32 @@ class FlipWiseApp:
         # Update all buttons
         for widget in self.root.winfo_children():
             if isinstance(widget, tk.Button):
-                widget.config(bg = theme["button_bg"], fg = theme["button_fg"])
+                widget.config(bg = theme["button_bg"], fg = theme["button_fg"], activebackground = theme["bg"], activeforeground = theme["fg"])
+        
+        # Update all open Toplevel windows
+        for window in self.root.winfo_children():
+            if isinstance(window, tk.Toplevel):
+                self.apply_theme(window)
 
+    def apply_theme(self, window):
+        """
+        Applies the current theme to a given Toplevel window and its widgets.
+        """
+        if self.dark_mode:
+            theme = self.dark_theme
+        else:
+            theme = self.light_theme
+        window.configure(bg=theme["bg"])
+
+        for widget in window.winfo_children():
+            if isinstance(widget, tk.Label):
+                widget.config(bg = theme["bg"], fg = theme["fg"])
+            elif isinstance(widget, tk.Entry):
+                widget.config(bg = theme["bg"], fg = theme["fg"], insertbackground = theme["fg"])
+            elif isinstance(widget, tk.Button):
+                widget.config(bg = theme["button_bg"], fg = theme["button_fg"], activebackground = theme["bg"], activeforeground = theme["fg"])
+            elif isinstance(widget, (tk.Frame, tk.Toplevel)):
+                self.apply_theme(widget)
 
 if __name__ == "__main__":
     root = tk.Tk()
