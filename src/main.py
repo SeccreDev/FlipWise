@@ -24,6 +24,9 @@ class FlipWiseApp:
         """
         self.root = root
         self.root.title("FlipWise - Flashcard App")
+        self.root.geometry("800x600")
+        self.root.resizable(True, True)
+        self.root.minsize(500, 400)
         
         # Themes
         self.dark_mode = False
@@ -61,12 +64,12 @@ class FlipWiseApp:
         categories = sorted({card["category"] for card in self.flashcards})
 
         # Label to display question/answer
-        self.card_label = tk.Label(root, text="No cards yet. Add one!", font=("Arial", 10), width = 30, height = 10, relief="groove", wraplength = 400)
-        self.card_label.pack(pady = 20)
+        self.card_label = tk.Label(root, text = "No cards yet. Add one!", font = ("Arial", 10), width = 30, height = 10, relief="groove", wraplength = 600)
+        self.card_label.pack(expand = True, fill = "both", padx = 10, pady = 10)
 
         button_frame = tk.Frame(root)
         button_frame.pack(pady = 10)
-
+        
         # Buttons for flashcard actions
         self.previous_btn = tk.Button(button_frame, text="BACK!", command = self.previous_card)
         self.previous_btn.grid(row = 0, column = 0, padx = 5)
