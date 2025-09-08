@@ -24,10 +24,10 @@ class FlipWiseApp:
         """
         self.root = root
         self.root.title("FlipWise - Flashcard App")
-        self.root.geometry("800x600")
+        self.root.geometry("500x400")
         self.root.resizable(True, True)
-        self.root.minsize(500, 400)
-        
+        self.root.minsize(400, 500)
+
         # Themes
         self.dark_mode = False
 
@@ -67,47 +67,56 @@ class FlipWiseApp:
         self.card_label = tk.Label(root, text = "No cards yet. Add one!", font = ("Arial", 10), width = 30, height = 10, relief="groove", wraplength = 600)
         self.card_label.pack(expand = True, fill = "both", padx = 10, pady = 10)
 
-        button_frame = tk.Frame(root)
-        button_frame.pack(pady = 10)
         
         # Buttons for flashcard actions
-        self.previous_btn = tk.Button(button_frame, text="BACK!", command = self.previous_card)
-        self.previous_btn.grid(row = 0, column = 0, padx = 5)
+        navegation_frame = tk.Frame(root)
+        navegation_frame.pack(pady = 5, padx = 5)
+        self.previous_btn = tk.Button(navegation_frame, text="BACK!", command = self.previous_card)
+        self.previous_btn.pack(side = tk.LEFT)
 
-        self.flip_btn = tk.Button(button_frame,  text = "FLIP!", command = self.flip_card)
-        self.flip_btn.grid(row = 0, column = 1, padx = 5)
+        self.flip_btn = tk.Button(navegation_frame,  text = "FLIP!", command = self.flip_card)
+        self.flip_btn.pack(side = tk.LEFT)
 
-        self.next_btn = tk.Button(button_frame, text = "NEXT!", command = self.next_card)
-        self.next_btn.grid(row = 0, column = 2, padx = 5)
+        self.next_btn = tk.Button(navegation_frame, text = "NEXT!", command = self.next_card)
+        self.next_btn.pack(side = tk.LEFT)
 
+        # Buttons for adding/deleting flashcards
+        button_frame = tk.Frame(root)
+        button_frame.pack(pady = 5, padx = 5)
         self.save_btn = tk.Button(button_frame, text = "Save", command = self.save_flashcards)
-        self.save_btn.grid(row = 1, column = 0, padx = 5, pady = 5)
+        self.save_btn.pack(side = tk.LEFT)
 
         self.add_btn = tk.Button(button_frame, text = "+ Add Card", command = self.add_card)
-        self.add_btn.grid(row = 1, column = 1, padx = 5)
-
-        self.delete_btn = tk.Button(button_frame, text = "- Delete Card", command = self.delete_card)
-        self.delete_btn.grid(row = 1, column = 2, padx = 5)
-
-        self.load_btn = tk.Button(button_frame, text = "Load", command = self.load_flashcards)
-        self.load_btn.grid(row = 1, column = 3, padx = 5, pady = 5)
+        self.add_btn.pack(side = tk.LEFT)
 
         self.edit_btn = tk.Button(button_frame, text = "Edit", command = self.edit_card)
-        self.edit_btn.grid(row = 2, column = 0, padx = 5, pady = 5)
+        self.edit_btn.pack(side = tk.LEFT)
 
-        self.shuffle_btn = tk.Button(button_frame, text = "Shuffle Mode", command = self.shuffle_mode)
-        self.shuffle_btn.grid(row = 2, column = 1, padx = 5, pady = 5)
+        self.delete_btn = tk.Button(button_frame, text = "- Delete Card", command = self.delete_card)
+        self.delete_btn.pack(side = tk.LEFT)
 
-        self.clear_btn = tk.Button(button_frame, text = "Clear", command = self.clear_cards)
-        self.clear_btn.grid(row = 2, column = 2, padx = 5, pady = 5)
+        self.load_btn = tk.Button(button_frame, text = "Load", command = self.load_flashcards)
+        self.load_btn.pack(side = tk.LEFT)
 
+        button_frame2 = tk.Frame(root)
+        button_frame2.pack(pady = 5, padx = 5)
+
+        self.shuffle_btn = tk.Button(button_frame2, text = "Shuffle Mode", command = self.shuffle_mode)
+        self.shuffle_btn.pack(side = tk.LEFT)
+
+        self.clear_btn = tk.Button(button_frame2, text = "Clear", command = self.clear_cards)
+        self.clear_btn.pack(side = tk.LEFT)
+
+        dark_button = tk.Button(button_frame2, text="Dark Mode", command = self.toggle_dark_mode)
+        dark_button.pack(side = tk.LEFT)
+
+        button_frame3 = tk.Frame(root)
+        button_frame3.pack(pady = 5, padx = 5)
         self.category_var = tk.StringVar(self.root)
         self.category_var.set("All")
-        self.category_menu = tk.OptionMenu(self.root, self.category_var, "All", *categories, command = self.switch_category)
-        self.category_menu.pack()
+        self.category_menu = tk.OptionMenu(button_frame3, self.category_var, "All", *categories, command = self.switch_category)
+        self.category_menu.pack(side = tk.BOTTOM)
 
-        dark_button = tk.Button(self.root, text="Dark Mode", command = self.toggle_dark_mode)
-        dark_button.pack(pady=5)
 
         self.update_card_display()
     
