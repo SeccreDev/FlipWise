@@ -83,8 +83,6 @@ class FlipWiseApp:
         # Buttons for adding/deleting flashcards
         button_frame = tk.Frame(root)
         button_frame.pack(pady = 5, padx = 5)
-        self.save_btn = tk.Button(button_frame, text = "Save", command = self.save_flashcards)
-        self.save_btn.pack(side = tk.LEFT)
 
         self.add_btn = tk.Button(button_frame, text = "+ Add Card", command = self.add_card)
         self.add_btn.pack(side = tk.LEFT)
@@ -95,9 +93,7 @@ class FlipWiseApp:
         self.delete_btn = tk.Button(button_frame, text = "- Delete Card", command = self.delete_card)
         self.delete_btn.pack(side = tk.LEFT)
 
-        self.load_btn = tk.Button(button_frame, text = "Load", command = self.load_flashcards)
-        self.load_btn.pack(side = tk.LEFT)
-
+        # Misc Buttons
         button_frame2 = tk.Frame(root)
         button_frame2.pack(pady = 5, padx = 5)
 
@@ -110,11 +106,21 @@ class FlipWiseApp:
         dark_button = tk.Button(button_frame2, text="Dark Mode", command = self.toggle_dark_mode)
         dark_button.pack(side = tk.LEFT)
 
+        # JSON save and load
         button_frame3 = tk.Frame(root)
         button_frame3.pack(pady = 5, padx = 5)
+        self.save_btn = tk.Button(button_frame3, text = "Save", command = self.save_flashcards)
+        self.save_btn.pack(side = tk.LEFT)
+
+        self.load_btn = tk.Button(button_frame3, text = "Load", command = self.load_flashcards)
+        self.load_btn.pack(side = tk.LEFT)
+        
+        # Category Selector
+        button_frame4 = tk.Frame(root)
+        button_frame4.pack(pady = 5, padx = 5)
         self.category_var = tk.StringVar(self.root)
         self.category_var.set("All")
-        self.category_menu = tk.OptionMenu(button_frame3, self.category_var, "All", *categories, command = self.switch_category)
+        self.category_menu = tk.OptionMenu(button_frame4, self.category_var, "All", *categories, command = self.switch_category)
         self.category_menu.pack(side = tk.BOTTOM)
 
 
