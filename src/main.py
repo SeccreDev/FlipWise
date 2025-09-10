@@ -24,9 +24,9 @@ class FlipWiseApp:
         """
         self.root = root
         self.root.title("FlipWise - Flashcard App")
-        self.root.geometry("500x400")
+        self.center_window(500, 400)
         self.root.resizable(True, True)
-        self.root.minsize(400, 500)
+        self.root.minsize(500, 400)
 
         # Themes
         self.dark_mode = False
@@ -109,10 +109,10 @@ class FlipWiseApp:
         # JSON save and load
         button_frame3 = tk.Frame(root)
         button_frame3.pack(pady = 5, padx = 5)
-        self.save_btn = tk.Button(button_frame3, text = "Save", command = self.save_flashcards)
+        self.save_btn = tk.Button(button_frame3, text = "Save Flashcards", command = self.save_flashcards)
         self.save_btn.pack(side = tk.LEFT)
 
-        self.load_btn = tk.Button(button_frame3, text = "Load", command = self.load_flashcards)
+        self.load_btn = tk.Button(button_frame3, text = "Load Flashcards", command = self.load_flashcards)
         self.load_btn.pack(side = tk.LEFT)
         
         # Category Selector
@@ -423,7 +423,7 @@ class FlipWiseApp:
             theme = self.dark_theme
         else:
             theme = self.light_theme
-        window.configure(bg=theme["bg"])
+        window.configure(bg = theme["bg"])
 
         for widget in window.winfo_children():
             if isinstance(widget, tk.Label):
@@ -434,6 +434,19 @@ class FlipWiseApp:
                 widget.config(bg = theme["button_bg"], fg = theme["button_fg"], activebackground = theme["bg"], activeforeground = theme["fg"])
             elif isinstance(widget, (tk.Frame, tk.Toplevel)):
                 self.apply_theme(widget)
+
+    def center_window(self, width = 500, height = 400):
+        """
+        Centers the main window on the screen.
+        """
+        # Get screen widht and height
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+
+        # Calculate position and sets it with geometry
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+        self.root.geometry(f"{width}x{height}+{x}+{y}")
 
 if __name__ == "__main__":
     root = tk.Tk()
