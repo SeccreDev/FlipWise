@@ -24,9 +24,10 @@ class FlipWiseApp:
         """
         self.root = root
         self.root.title("FlipWise - Flashcard App")
-        self.center_window(500, 400)
+        self.root.geometry("500x600")
+        self.center_window(self.root)
         self.root.resizable(True, True)
-        self.root.minsize(500, 400)
+        self.root.minsize(500, 600)
 
         # Themes
         self.dark_mode = False
@@ -435,18 +436,26 @@ class FlipWiseApp:
             elif isinstance(widget, (tk.Frame, tk.Toplevel)):
                 self.apply_theme(widget)
 
-    def center_window(self, width = 500, height = 400):
+    def center_window(self, window):
         """
         Centers the main window on the screen.
         """
+        # Get window size
+        width = window.winfo_width()
+        height = window.winfo_height()
+
+        # If the window width and height is 1, falls back to a default
+        if width <= 1 or height <= 1:
+            width, height = 400, 300
+
         # Get screen widht and height
-        screen_width = self.root.winfo_screenwidth()
-        screen_height = self.root.winfo_screenheight()
+        screen_width = window.winfo_screenwidth()
+        screen_height = window.winfo_screenheight()
 
         # Calculate position and sets it with geometry
         x = (screen_width // 2) - (width // 2)
         y = (screen_height // 2) - (height // 2)
-        self.root.geometry(f"{width}x{height}+{x}+{y}")
+        window.geometry(f"{width}x{height}+{x}+{y}")
 
 if __name__ == "__main__":
     root = tk.Tk()
