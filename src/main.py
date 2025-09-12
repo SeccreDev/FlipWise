@@ -176,6 +176,7 @@ class FlipWiseApp:
         """
         add_window = tk.Toplevel(self.root)
         add_window.title("Add Flashcard")
+        self.center_window(add_window)
         self.apply_theme(add_window)
 
         tk.Label(add_window, text = "Front:").pack(pady = 5)
@@ -266,6 +267,7 @@ class FlipWiseApp:
 
         edit_window = tk.Toplevel(self.root)
         edit_window.title("Edit Flashcard")
+        self.center_window(edit_window)
         self.apply_theme(edit_window)
 
         tk.Label(edit_window, text = "Front:").pack(pady = 5)
