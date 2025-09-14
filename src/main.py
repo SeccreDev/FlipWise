@@ -51,7 +51,7 @@ class FlipWiseApp:
         self.root.bind("<Right>", lambda e: self.next_card())
         self.root.bind("<Left>", lambda e: self.previous_card())
         self.root.bind("<e>", lambda e: self.edit_card())
-        self.root.bind("<s>", lambda e: self.shuffle_mode())
+        self.root.bind("<s>", lambda e: self.toggle_shuffle_mode())
         self.root.bind("<c>", lambda e: self.clear_cards())
         self.root.bind("<Delete>", lambda e: self.delete_card())
 
@@ -98,7 +98,7 @@ class FlipWiseApp:
         button_frame2 = tk.Frame(root)
         button_frame2.pack(pady = 5, padx = 5)
 
-        self.shuffle_btn = tk.Button(button_frame2, text = "Shuffle Mode", command = self.shuffle_mode)
+        self.shuffle_btn = tk.Button(button_frame2, text = "Shuffle Mode", command = self.toggle_shuffle_mode)
         self.shuffle_btn.pack(side = tk.LEFT)
 
         self.clear_btn = tk.Button(button_frame2, text = "Clear", command = self.clear_cards)
@@ -306,7 +306,7 @@ class FlipWiseApp:
             edit_window.destroy()
         tk.Button(edit_window, text = "Save", command = save_edited_card).pack(pady = 10)
 
-    def shuffle_mode(self):
+    def toggle_shuffle_mode(self):
         """
         Shuffles the cards.
         """
@@ -315,16 +315,22 @@ class FlipWiseApp:
 
         self.is_shuffle_mode = not self.is_shuffle_mode
 
-        if self.shuffle_mode:
+        if self.is_shuffle_mode:
+            self.filtered_cards = list(self.filtered_cards)
             random.shuffle(self.filtered_cards)
             self.current_index = 0
             self.showing_front = True
             self.update_card_display()
             messagebox.showinfo("Shuffle Cards", "Cards shuffled!")
         else:
-            # Will reset the normal order
-            self.flashcards.sort(key = lambda card: card["front"])
+            if getattr(self, "current_category", "All") ==  "All":
+                self.filtered_cards = list(self.flashcards)
+            else:
+                category = self.current_category
+                self.filtered_cards = [card for card in self.flashcards if card.get("category", "General") == category]
+            
             self.current_index = 0
+            self.showing_front = True
             self.update_card_display()
 
     def clear_cards(self):
