@@ -327,7 +327,7 @@ class FlipWiseApp:
                 self.filtered_cards = list(self.flashcards)
             else:
                 category = self.current_category
-                self.filtered_cards = [card for card in self.flashcards if card.get("category", "General") == category]
+                self.filtered_cards = [card for card in self.flashcards if card.get("category") == category]
             
             self.current_index = 0
             self.showing_front = True
@@ -355,6 +355,7 @@ class FlipWiseApp:
             self.filtered_cards = [card for card in self.flashcards if card["category"] == selected_category]
 
         self.current_index = 0
+        self.current_category = selected_category
         self.showing_front = True
         self.update_card_display()
 
