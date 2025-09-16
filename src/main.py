@@ -221,20 +221,23 @@ class FlipWiseApp:
             messagebox.showinfo("Delete Card", "No cards to delete.")
             return
         
-        front_text = self.flashcards[self.current_index]["front"]
-        confirm = messagebox.askyesno("Delete Card", f"Delete this card?\n\nFront: {front_text}")
+        card_to_delete = self.filtered_cards[self.current_index]
+        front = card_to_delete["front"]
+        confirm = messagebox.askyesno("Delete Card", f"Delete this card?\n\nFront: {front}")
         
-        if confirm:
-            del self.flashcards[self.current_index]
+        if not confirm:
+            return
+        
+        self.flashcards.remove(card_to_delete)
 
-            # Adjusting index
-            if self.current_index >= len(self.flashcards):
-                self.current_index = max(0, len(self.flashcards) - 1)
-            
-            self.showing_front = True
-            self.refresh_categories()
-            self.switch_category(self.current_category)
-            self.update_card_display()
+        # Adjusting index
+        if self.current_index >= len(self.filtered_cards):
+            self.current_index = max(0, len(self.filtered_cards) - 1)
+        
+        self.showing_front = True
+        self.refresh_categories()
+        self.switch_category(self.current_category)
+        self.update_card_display()
 
     def load_flashcards(self):
         """
