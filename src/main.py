@@ -6,13 +6,7 @@ import random
 
 class FlipWiseApp:
     """
-    A simple flashcard application with a Tkinter GUI.
-    
-    Features:
-        - Add new flashcards
-        - Flip between question and answer
-        - Navigate to next flashcard
-        - Save and load flashcards from JSON files
+    A flashcard application made with Tkinter.
     """
 
     def __init__(self, root):
@@ -197,8 +191,14 @@ class FlipWiseApp:
             back = back_field.get().strip()
             category = category_field.get().strip() or "General"
             if front and back:
-                self.flashcards.append({"front": front, "back": back, "category": category})
-                self.current_index = len(self.flashcards) - 1
+                new_card = {"front": front, "back": back, "category": category}
+                self.flashcards.append(new_card)
+
+                if self.filtered_cards:
+                    self.current_index = len(self.filtered_cards) - 1
+                else:
+                    self.current_index = 0
+                
                 self.showing_front = True
                 self.update_card_display()
                 self.refresh_categories()
