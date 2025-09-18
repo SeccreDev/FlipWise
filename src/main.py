@@ -344,8 +344,11 @@ class FlipWiseApp:
             return
         if messagebox.askyesno("Clear Cards", "Are you sure you want to clear all flashcards?"):
             self.flashcards = []
+            self.filtered_cards = []
             self.current_index = 0
             self.showing_front = True
+            self.refresh_categories()
+            self.switch_category(self.current_category)
             self.update_card_display()
 
     def switch_category(self, selected_category):
