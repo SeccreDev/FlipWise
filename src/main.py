@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import simpledialog, messagebox, filedialog
 import json
+import csv
 import os
 import random
 
@@ -49,7 +50,7 @@ class FlipWiseApp:
         self.root.bind("<c>", lambda e: self.clear_cards())
         self.root.bind("<Delete>", lambda e: self.delete_card())
 
-        # Store flashcards as a list of dicts: [{"question": str, "answer": str}]
+        # Store flashcards as a list of dicts: [{"front": str, "back": str, "category": str}]
         self.flashcards = []
         self.filtered_cards = []
         self.current_index = 0
@@ -62,7 +63,6 @@ class FlipWiseApp:
         self.card_label = tk.Label(root, text = "No cards yet. Add one!", font = ("Arial", 10), width = 30, height = 10, relief="groove", wraplength = 600)
         self.card_label.pack(expand = True, fill = "both", padx = 10, pady = 10)
 
-        
         # Buttons for flashcard actions
         navegation_frame = tk.Frame(root)
         navegation_frame.pack(pady = 5, padx = 5)
@@ -241,19 +241,34 @@ class FlipWiseApp:
 
     def load_flashcards(self):
         """
-        Load flashcards from a JSON file.
+        Load flashcards from a JSON or CSV file.
         """
-        file_path = filedialog.askopenfilename(filetypes = [("JSON files", "*.json")])
+        file_path = filedialog.askopenfilename(filetypes = [("JSON files", "*.json"), ("CSV files", "*.csv")], title="Load Flashcards")
+        if not file_path:
+            return
+        
+        try:
+            if file_path and os.path.exists(file_path):
+                if file_path[-5:] == ".json":
+                    with open(file_path, "r") as file:
+                        self.flashcards = json.load(file)
+                elif file_path[-4:] == ".csv":
+                    with open(file_path, "r") as file:
+                        reader = csv.DictReader(file)
+                        self.flashcards = [{"front": row["front"], "back": row["back"], "category": row["category"]} for row in reader]
+                else:
+                    return
 
-        if file_path and os.path.exists(file_path):
-            with open(file_path, "r") as f:
-                self.flashcards = json.load(f)
-            self.current_index = 0
-            self.showing_front = True
-            self.refresh_categories()
-            self.switch_category(self.current_category)
-            self.update_card_display()
-            messagebox.showinfo("Load", f"Loaded {len(self.flashcards)} cards!")
+                self.current_index = 0
+                self.showing_front = True
+                self.refresh_categories()
+                self.switch_category("All")
+                self.update_card_display()
+                messagebox.showinfo("Load", f"Loaded {len(self.flashcards)} cards!")
+        except Exception as e:
+            messagebox.showerror("Load from file", f"Error loading file:\n{e}")
+
+
     
     def edit_card(self):
         """
