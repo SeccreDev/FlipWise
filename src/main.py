@@ -152,17 +152,34 @@ class FlipWiseApp:
 
     def save_flashcards(self):
         """
-        Save flashcards to a JSON file.
+        Save flashcards to a JSON file or CSV file.
         """
         if not self.flashcards:
             messagebox.showinfo("Save", "No flashcards to save.")
             return
         
-        file_path = filedialog.asksaveasfilename(defaultextension = ".json", filetypes = [("JSON files", "*.json")])
-        if file_path:
-            with open(file_path, "w") as f:
-                json.dump(self.flashcards, f, indent = 2)
-            messagebox.showinfo("Save", f"Saved {len(self.flashcards)} cards!")
+        file_path = filedialog.asksaveasfilename(filetypes = [("JSON files", "*.json"), ("CSV Files", "*.csv")], title="Save Flashcards")
+        if not file_path:
+            return
+
+        try:
+            if file_path[-5:] == ".json":
+                with open(file_path, "w") as f:
+                    json.dump(self.flashcards, f, indent = 2)
+
+            elif file_path[-4:] == ".csv":
+                with open(file_path, "w") as file:
+                    writer = csv.writer(file)
+                    writer.writerow(["front", "back", "category"])
+
+                    for card in self.flashcards:
+                        writer.writerow([card["front"], card["back"], card["category"]])
+            else:
+                return
+            messagebox.showinfo("Save file", f"Saved {len(self.flashcards)} cards!")
+        except Exception as e:
+            messagebox.showerror("Save file", f"Error saving file:\n{e}")
+        
     
     def add_card(self):
         """
