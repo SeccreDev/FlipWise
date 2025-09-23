@@ -60,8 +60,9 @@ class FlipWiseApp:
         categories = sorted({card["category"] for card in self.flashcards})
 
         # Label to display question/answer
-        self.card_label = tk.Label(root, text = "No cards yet. Add one!", font = ("Arial", 10), width = 30, height = 10, relief="groove", wraplength = 600)
+        self.card_label = tk.Label(root, text = "No cards yet. Add one!", font = ("Arial", 10), width = 30, height = 10, relief="groove", wraplength = 600, cursor = "hand2")
         self.card_label.pack(expand = True, fill = "both", padx = 10, pady = 10)
+        self.card_label.bind("<Button-1>", self.on_card_label_click)
 
         # Buttons for flashcard actions
         navegation_frame = tk.Frame(root)
@@ -121,6 +122,22 @@ class FlipWiseApp:
 
         self.update_card_display()
     
+    def on_card_label_click(self, event):
+        """
+        The clicks on different parts of the flashcard are tied to different actions:
+        -Left side: Go to the previous card
+        -Center: Flips the card
+        -Right side: Go to the next card
+        """
+        width = self.card_label.winfo_width()
+        a_third = width // 3
+        if event.x < a_third:
+            self.previous_card()
+        elif event.x > a_third * 2:
+            self.next_card()
+        else:
+            self.flip_card()
+
     def previous_card(self):
         """
         Move to the previous flashcard (wraps around if at beginning).
@@ -175,6 +192,7 @@ class FlipWiseApp:
                     for card in self.flashcards:
                         writer.writerow([card["front"], card["back"], card["category"]])
             else:
+                messagebox.showinfo("Save file", f"Format unknown")
                 return
             messagebox.showinfo("Save file", f"Saved {len(self.flashcards)} cards!")
         except Exception as e:
