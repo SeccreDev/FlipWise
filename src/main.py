@@ -12,7 +12,7 @@ class FlipWiseApp:
 
     def __init__(self, root):
         """
-        Initialize the FlipWiseApp.
+        Initialize the FlipWise App.
 
         Args:
             root (tk.Tk): The root Tkinter window.
@@ -59,10 +59,29 @@ class FlipWiseApp:
         self.current_category = "All"
         categories = sorted({card["category"] for card in self.flashcards})
 
+        # Menu
+        self.menu_bar = tk.Menu(self.root)
+        self.root.config(menu = self.menu_bar)
+
+        # File Menu
+        self.file_menu = tk.Menu(self.menu_bar, tearoff = 0)
+        self.menu_bar.add_cascade(label = "File", menu = self.file_menu)
+        self.file_menu.add_command(label = "Save Flashcards", command = self.save_flashcards)
+        self.file_menu.add_command(label = "Load Flashcards", command = self.load_flashcards)
+        self.file_menu.add_command(label = "Clear Flashcards", command = self.clear_cards)
+        self.file_menu.add_separator()
+        self.file_menu.add_command(label = "Exit", command = self.root.quit)
+
+        # View Menu
+        self.view_menu = tk.Menu(self.menu_bar, tearoff = 0)
+        self.menu_bar.add_cascade(label = "View", menu = self.view_menu)
+        self.view_menu.add_command(label = "Dark Mode", command = self.toggle_dark_mode)
+
         # Label to display question/answer
         self.card_label = tk.Label(root, text = "No cards yet. Add one!", font = ("Arial", 10), width = 30, height = 10, relief="groove", wraplength = 600, cursor = "hand2")
         self.card_label.pack(expand = True, fill = "both", padx = 10, pady = 10)
         self.card_label.bind("<Button-1>", self.on_card_label_click)
+
 
         # Buttons for flashcard actions
         navegation_frame = tk.Frame(root)
@@ -95,21 +114,6 @@ class FlipWiseApp:
 
         self.shuffle_btn = tk.Button(button_frame2, text = "Shuffle Mode", command = self.toggle_shuffle_mode)
         self.shuffle_btn.pack(side = tk.LEFT)
-
-        self.clear_btn = tk.Button(button_frame2, text = "Clear", command = self.clear_cards)
-        self.clear_btn.pack(side = tk.LEFT)
-
-        dark_button = tk.Button(button_frame2, text="Dark Mode", command = self.toggle_dark_mode)
-        dark_button.pack(side = tk.LEFT)
-
-        # JSON save and load
-        button_frame3 = tk.Frame(root)
-        button_frame3.pack(pady = 5, padx = 5)
-        self.save_btn = tk.Button(button_frame3, text = "Save Flashcards", command = self.save_flashcards)
-        self.save_btn.pack(side = tk.LEFT)
-
-        self.load_btn = tk.Button(button_frame3, text = "Load Flashcards", command = self.load_flashcards)
-        self.load_btn.pack(side = tk.LEFT)
         
         # Category Selector
         button_frame4 = tk.Frame(root)
@@ -119,7 +123,7 @@ class FlipWiseApp:
         self.category_menu = tk.OptionMenu(button_frame4, self.category_var, "All", *categories, command = self.switch_category)
         self.category_menu.pack(side = tk.BOTTOM)
 
-
+        
         self.update_card_display()
     
     def on_card_label_click(self, event):
@@ -140,7 +144,7 @@ class FlipWiseApp:
 
     def previous_card(self):
         """
-        Move to the previous flashcard (wraps around if at beginning).
+        Move to the previous flashcard (wraps around if at the beginning).
         """
         if not self.filtered_cards:
             return
@@ -159,7 +163,7 @@ class FlipWiseApp:
     
     def next_card(self):
         """
-        Move to the next flashcard (wraps around if at end).
+        Move to the next flashcard (wraps around if at the end).
         """
         if not self.flashcards:
             return
@@ -391,6 +395,7 @@ class FlipWiseApp:
         Clear the currently loaded flashcards.
         """
         if not self.flashcards:
+            messagebox.showinfo("Clear Cards", "No flashcards to clear")
             return
         if messagebox.askyesno("Clear Cards", "Are you sure you want to clear all flashcards?"):
             self.flashcards = []
