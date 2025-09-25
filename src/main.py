@@ -23,6 +23,7 @@ class FlipWiseApp:
         self.center_window(self.root)
         self.root.resizable(True, True)
         self.root.minsize(500, 600)
+        #self.root.overrideredirect(True)
 
         # Themes
         self.dark_mode = False
@@ -123,7 +124,7 @@ class FlipWiseApp:
         self.category_menu = tk.OptionMenu(button_frame4, self.category_var, "All", *categories, command = self.switch_category)
         self.category_menu.pack(side = tk.BOTTOM)
 
-        
+
         self.update_card_display()
     
     def on_card_label_click(self, event):
@@ -469,6 +470,11 @@ class FlipWiseApp:
 
         # Update root background
         self.root.configure(bg = theme["bg"])
+
+        # Update menu bar & submenus
+        self.menu_bar.configure(bg = theme["bg"], fg = theme["fg"])
+        self.file_menu.configure(bg = theme["bg"], fg = theme["fg"])
+        self.view_menu.configure(bg = theme["bg"], fg = theme["fg"])
 
         # Update card label
         self.card_label.config(bg = theme["bg"], fg = theme["fg"])
